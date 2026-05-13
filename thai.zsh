@@ -1,3 +1,6 @@
+export EDITOR="vim"
+export CDHIST="$HOME/.cd_history"
+
 function cd() {
 	builtin cd "$1" && echo "$PWD" >> $CDHIST
 }
@@ -20,5 +23,32 @@ function gg() {
 }
 
 function reload() {
-	source "$HOME/bin/scripts/thai.zsh"
+	source "$HOME/bin/scripts/shell-scripts/thai.zsh"
+}
+
+function cdf() {
+	cd $(fzf --walker-root=$HOME --walker=dir,follow,hidden)
+}
+
+function open() {
+	local FILENAME="$1"
+	local SESSIONNAME="${FILENAME//./_}"
+
+	if [ -n "$TMUX" ]; then
+		echo "In a tmux session"
+		tmux new -A -s "$SESSIONNAME" -d -- "vim $FILENAME";
+		tmux switch-client -t "$SESSIONNAME"
+	else
+		tmux new -A -s "$SESSIONNAME" -- "vim $FILENAME"
+	fi
+}
+
+function tmrec() {
+	local SESSIONNAME=$(tmux ls | awk -F':' '{ print $1 }' | fzy)
+	
+	if [ -n "$TMUX" ]; then
+		tmux switch-client -t "$SESSIONNAME"
+	else
+		tmux attach -t "$SESSIONNAME"
+	fi
 }
