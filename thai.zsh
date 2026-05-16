@@ -22,6 +22,18 @@ function gg() {
 	fi
 }
 
+function tunein() {
+	xdg-open "https://www.twitch.tv/$1" < /dev/null &>/dev/null & disown
+}
+
+function islive() {
+	if [ -n "$(curl -s https://www.twitch.tv/$1 | grep isLiveBroadcast)" ]; then
+		echo "$1 is live!"
+	else
+		echo "$1 is not live."
+	fi
+}
+
 function reload() {
 	source "$HOME/bin/scripts/shell-scripts/thai.zsh"
 }
