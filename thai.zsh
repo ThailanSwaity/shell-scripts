@@ -1,5 +1,6 @@
 export EDITOR="vim"
 export CDHIST="$HOME/.cd_history"
+export TWITCHHIST="$HOME/.twitch_history"
 
 function cd() {
 	builtin cd "$1" && echo "$PWD" >> $CDHIST
@@ -23,15 +24,26 @@ function gg() {
 }
 
 function tunein() {
-	xdg-open "https://www.twitch.tv/$1" < /dev/null &>/dev/null & disown
+	if [ -n "$1" ]; then
+		echo "$1" >> $TWITCHHIST;
+		xdg-open "https://www.twitch.tv/$1" < /dev/null &>/dev/null & disown
+	else
+		local SELECTION=$(tac $TWITCHHIST | awk '!seen[$0]++' | fzy)
+		if [ -n "$SELECTION" ]; then xdg-open "https://www.twitch.tv/$SELECTION" < /dev/null &>/dev/null & disown; fi
+	fi
 }
 
 function islive() {
+	echo "$1" >> $TWITCHHIST;
 	if [ -n "$(curl -s https://www.twitch.tv/$1 | grep isLiveBroadcast)" ]; then
 		echo "$1 is live!"
 	else
 		echo "$1 is not live."
 	fi
+}
+
+function whoislive() {
+	for i in $(tac $TWITCHHIST | awk '!seen[$0]++'); do islive "$i"; done
 }
 
 function reload() {
