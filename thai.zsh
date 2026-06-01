@@ -37,6 +37,24 @@ function tunein() {
 	fi
 }
 
+function link() {
+	if [ -n "$1" ]; then
+		echo "$1" >> $TWITCHHIST;
+		if [ -n "$(curl -s https://www.twitch.tv/$1 | grep isLiveBroadcast)" ]; then
+			tmux new -s "$1 stream" -d -- "streamlink https://www.twitch.tv/$1 best";
+		else
+			echo "$1 is not live."
+		fi
+	fi
+}
+
+function linkf() {
+	SELECTION="$(tac $TWITCHHIST | awk '!seen[$0]++' | fzy)"
+	if [ -n "$SELECTION" ]; then
+		link "$SELECTION"
+	fi
+}
+
 function islive() {
 	echo "$1" >> $TWITCHHIST;
 	if [ -n "$(curl -s https://www.twitch.tv/$1 | grep isLiveBroadcast)" ]; then
