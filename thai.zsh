@@ -7,11 +7,11 @@ function cd() {
 }
 
 function config() {
-	nvim "$HOME/bin/scripts/shell-scripts/thai.zsh"
+	$TEXTEDITOR "$HOME/bin/scripts/shell-scripts/thai.zsh"
 }
 
 function vif() {
-	nvim $(fzf --walker-root=$HOME)
+	$TEXTEDITOR $(fzf --walker-root=$HOME)
 }
 
 function rec() {
@@ -85,10 +85,10 @@ function open() {
 	local SESSIONNAME="${FILENAME//./_}"
 
 	if [ -n "$TMUX" ]; then
-		tmux new -A -s "$SESSIONNAME" -d -- "nvim $FILENAME";
+		tmux new -A -s "$SESSIONNAME" -d -- "$TEXTEDITOR $FILENAME";
 		tmux switch-client -t "$SESSIONNAME"
 	else
-		tmux new -A -s "$SESSIONNAME" -- "nvim $FILENAME"
+		tmux new -A -s "$SESSIONNAME" -- "$TEXTEDITOR $FILENAME"
 	fi
 }
 
