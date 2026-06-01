@@ -6,8 +6,12 @@ function cd() {
 	builtin cd "$1" && echo "$PWD" >> $CDHIST
 }
 
+function config() {
+	nvim "$HOME/bin/scripts/shell-scripts/thai.zsh"
+}
+
 function vif() {
-	vim $(fzf --walker-root=$HOME)
+	nvim $(fzf --walker-root=$HOME)
 }
 
 function rec() {
@@ -42,6 +46,10 @@ function islive() {
 	fi
 }
 
+function twitchdesc() {
+	curl "https://www.twitch.tv/$1" | sed 's/<[^>]*>//g; s/function.*//; s/{/{\n/g; s/\,/\,\n/g; s/}/\n}/g'
+}
+
 function whoislive() {
 	for i in $(tac $TWITCHHIST | awk '!seen[$0]++'); do islive "$i"; done
 }
@@ -59,11 +67,15 @@ function open() {
 	local SESSIONNAME="${FILENAME//./_}"
 
 	if [ -n "$TMUX" ]; then
-		tmux new -A -s "$SESSIONNAME" -d -- "vim $FILENAME";
+		tmux new -A -s "$SESSIONNAME" -d -- "nvim $FILENAME";
 		tmux switch-client -t "$SESSIONNAME"
 	else
-		tmux new -A -s "$SESSIONNAME" -- "vim $FILENAME"
+		tmux new -A -s "$SESSIONNAME" -- "nvim $FILENAME"
 	fi
+}
+
+function brightness() {
+	local BRIGHTNESS=$(brightnessctl i | awk -F'[()]' '{print $2}')
 }
 
 function tmrec() {
@@ -74,10 +86,6 @@ function tmrec() {
 	else
 		tmux attach -t "$SESSIONNAME"
 	fi
-}
-
-function vibe() {
-	cvlc "$HOME/Music/" --random --loop
 }
 
 function playlist() {
