@@ -2,5 +2,5 @@
 
 Dependencies are as follows:
 ```console
-pacman -S fzf fzy netcat vlc jq
+pacman -S fzf fzy netcat vlc jq bluetoothctl
 ```

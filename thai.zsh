@@ -161,3 +161,20 @@ function shuffle() {
 function status() {
 	echo "status" | nc -N 127.0.0.1 44500
 }
+
+function blueconnectf() {
+	OUTPUT="$(bluetoothctl devices)"
+	DEVICES="$( echo $OUTPUT | while read -r line; do echo "$(echo "$line" | sed 's/^.*[0-9]\s//')"; done)"
+	SELECTION="$(echo "$DEVICES" | fzy)"
+	UUID="$(echo $OUTPUT | grep $SELECTION | awk -F' ' '{ print $2 }')"
+	bluetoothctl connect "$UUID"
+}
+
+function bluedisconnectf() {
+	
+	OUTPUT="$(bluetoothctl devices)"
+	DEVICES="$( echo $OUTPUT | while read -r line; do echo "$(echo "$line" | sed 's/^.*[0-9]\s//')"; done)"
+	SELECTION="$(echo "$DEVICES" | fzy)"
+	UUID="$(echo $OUTPUT | grep $SELECTION | awk -F' ' '{ print $2 }')"
+	bluetoothctl disconnect "$UUID"
+}
